@@ -51,17 +51,16 @@ obra image generate "a serene mountain lake at sunset" --wait --json
 | Flag | Description |
 |------|-------------|
 | `--model <model>` | Model to use (default: `flux-2/pro-text-to-image`) |
-| `--aspect-ratio <ratio>` | e.g. `1:1`, `16:9`, `9:16`, `4:3`, `3:4` |
-| `--width <px>` | Output width in pixels |
-| `--height <px>` | Output height in pixels |
-| `--seed <n>` | Reproducibility seed |
+| `--param <key=value>` | Model-specific parameter (repeatable) |
+| `--params-json <json>` | JSON object of model parameters |
 | `-o <path>` | Save output to file |
-| `--raw` | Less processed, more natural look (Flux models) |
+
+Model-specific parameters vary by model. Common ones include `aspect_ratio`, `seed`, `negative_prompt`, `width`, `height`. Use `obra image info <model>` to see available parameters for a specific model.
 
 ### Example: specific model and aspect ratio
 
 ```bash
-obra image generate "cyberpunk cityscape" --model google/imagen4 --aspect-ratio 16:9 --wait --json
+obra image generate "cyberpunk cityscape" --model google/imagen4 --param aspect_ratio=16:9 --wait --json
 ```
 
 ### Available Image Models
@@ -81,18 +80,28 @@ Notable models: `flux-2/pro-text-to-image`, `google/imagen4`, `grok-imagine/text
 
 ### Image-to-Image (Edit with Reference)
 
-Provide an input image plus a prompt describing the edit:
+Provide an input image URL plus a prompt describing the edit. Use `--param image_urls=<url>` to pass the reference image (must be a URL, not a local path):
 
 ```bash
-obra image generate "make it look like winter" --image input.jpg --model seedream/4.5-edit --wait --json
+obra image generate "make it look like winter" --model seedream/4.5-edit --param image_urls=https://example.com/input.jpg --wait --json
 ```
 
 Edit-capable models: `seedream/4.5-edit`, `bytedance/seedream-v4-edit`, `qwen/image-edit`, `grok-imagine/image-to-image`, `gpt-image/1.5-image-to-image`, `google/nano-banana-edit`, `google/pro-image-to-image`, `ideogram/character-edit`.
 
+Use `obra image info <model>` to check the exact parameter names for each model.
+
 ### Upscaling
 
+Some upscale models take a `task_id` from a previous generation task:
+
 ```bash
-obra image generate "upscale" --image low-res.jpg --model grok-imagine/upscale --wait --json
+obra image generate "" --model grok-imagine/upscale --param task_id=<previous-task-id> --wait --json
+```
+
+Other upscale models accept image URLs directly:
+
+```bash
+obra image generate "upscale" --model topaz/image-upscale --param image_urls=https://example.com/low-res.jpg --wait --json
 ```
 
 Upscale models: `grok-imagine/upscale`, `topaz/image-upscale`, `recraft/crisp-upscale`.
@@ -100,19 +109,19 @@ Upscale models: `grok-imagine/upscale`, `topaz/image-upscale`, `recraft/crisp-up
 ### Background Removal
 
 ```bash
-obra image generate "remove background" --image photo.jpg --model recraft/remove-background --wait --json
+obra image generate "" --model recraft/remove-background --param image_urls=https://example.com/photo.jpg --wait --json
 ```
 
 ### Reframing (Extend / Outpaint)
 
 ```bash
-obra image generate "extend the scene" --image photo.jpg --model ideogram/v3-reframe --wait --json
+obra image generate "extend the scene" --model ideogram/v3-reframe --param image_urls=https://example.com/photo.jpg --wait --json
 ```
 
 ### Character Remix
 
 ```bash
-obra image generate "character in a new style" --image character.jpg --model ideogram/character-remix --wait --json
+obra image generate "character in a new style" --model ideogram/character-remix --param image_urls=https://example.com/character.jpg --wait --json
 ```
 
 ---
@@ -130,15 +139,17 @@ obra video generate "a cat playing piano" --wait --json
 | Flag | Description |
 |------|-------------|
 | `--model <model>` | Video model to use |
-| `--image <path>` | Input image for image-to-video |
-| `--aspect-ratio <ratio>` | e.g. `16:9`, `9:16` |
-| `--duration <seconds>` | Video duration |
+| `-i, --image <path>` | Input image for image-to-video |
+| `--param <key=value>` | Model-specific parameter (repeatable) |
+| `--params-json <json>` | JSON object of model parameters |
 | `-o <path>` | Save output to file |
+
+Model-specific parameters (aspect ratio, duration, etc.) vary by model. Use `obra video info <model>` to see available parameters.
 
 ### Image-to-Video
 
 ```bash
-obra video generate "bring this scene to life" --image scene.jpg --wait --json
+obra video generate "bring this scene to life" -i scene.jpg --wait --json
 ```
 
 ### Available Video Models
@@ -165,25 +176,25 @@ Notable models by provider:
 Transform an existing video with a new prompt:
 
 ```bash
-obra video generate "convert to anime style" --image input.mp4 --model wan/2-6-video-to-video --wait --json
+obra video generate "convert to anime style" -i input.mp4 --model wan/2-6-video-to-video --wait --json
 ```
 
 ### Video Upscaling
 
 ```bash
-obra video generate "upscale" --image low-res.mp4 --model topaz/video-upscale --wait --json
+obra video generate "upscale" -i low-res.mp4 --model topaz/video-upscale --wait --json
 ```
 
 ### Watermark Removal
 
 ```bash
-obra video generate "remove watermark" --image watermarked.mp4 --model sora-watermark-remover --wait --json
+obra video generate "remove watermark" -i watermarked.mp4 --model sora-watermark-remover --wait --json
 ```
 
 ### Motion Control
 
 ```bash
-obra video generate "camera pan left" --image scene.jpg --model kling-2.6/motion-control --wait --json
+obra video generate "camera pan left" -i scene.jpg --model kling-2.6/motion-control --wait --json
 ```
 
 ### AI Avatars
@@ -191,7 +202,7 @@ obra video generate "camera pan left" --image scene.jpg --model kling-2.6/motion
 Generate talking-head avatar videos:
 
 ```bash
-obra video generate "introduce yourself as a tech reviewer" --image avatar.jpg --model kling/ai-avatar-pro --wait --json
+obra video generate "introduce yourself as a tech reviewer" -i avatar.jpg --model kling/ai-avatar-pro --wait --json
 ```
 
 Models: `kling/ai-avatar-standard`, `kling/ai-avatar-pro`.
@@ -199,7 +210,7 @@ Models: `kling/ai-avatar-standard`, `kling/ai-avatar-pro`.
 ### Speech-to-Video
 
 ```bash
-obra video generate "speaking character" --image audio.wav --model wan/2-2-a14b-speech-to-video-turbo --wait --json
+obra video generate "speaking character" -i audio.wav --model wan/2-2-a14b-speech-to-video-turbo --wait --json
 ```
 
 ### Storyboard
@@ -222,15 +233,16 @@ obra music generate "upbeat electronic dance track" --wait --json
 
 | Flag | Description |
 |------|-------------|
-| `--model <model>` | Model version: `V3_5`, `V4`, `V4_5`, `V4_5PLUS`, `V4_5ALL`, `V5` |
-| `--instrumental` | Generate without vocals |
-| `--custom-mode` | Enable custom mode for style/title control |
-| `--style <style>` | Music style (requires `--custom-mode`) |
-| `--title <title>` | Song title (requires `--custom-mode`) |
-| `--vocal-gender <gender>` | `male` or `female` |
-| `--negative-tags <tags>` | Styles to avoid |
-| `--style-weight <n>` | Style influence weight |
-| `--weirdness-constraint <n>` | Creativity constraint |
+| `-m, --model <model>` | Model version: `V3_5`, `V4`, `V4_5`, `V4_5PLUS`, `V4_5ALL`, `V5` (default: `V4_5`) |
+| `-i, --instrumental` | Generate without vocals |
+| `-c, --custom-mode` | Enable custom mode (requires `--style` and `--title`) |
+| `-s, --style <style>` | Music style/genre (requires `--custom-mode`) |
+| `-t, --title <title>` | Track title (requires `--custom-mode`) |
+| `--vocal-gender <gender>` | `m` or `f` |
+| `--negative-tags <tags>` | Music styles to exclude |
+| `--style-weight <n>` | Style adherence strength (0-1) |
+| `--weirdness-constraint <n>` | Creative deviation control (0-1) |
+| `--audio-weight <n>` | Audio feature balance (0-1) |
 | `-o <path>` | Save output to file |
 
 ### Instrumental Track
