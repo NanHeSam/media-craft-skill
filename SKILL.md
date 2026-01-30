@@ -61,7 +61,7 @@ obra image generate "a serene mountain lake at sunset" --wait --json
 ### Example: specific model and aspect ratio
 
 ```bash
-obra image generate "cyberpunk cityscape" --model recraft/v3 --aspect-ratio 16:9 --wait --json
+obra image generate "cyberpunk cityscape" --model google/imagen4 --aspect-ratio 16:9 --wait --json
 ```
 
 ### Available Image Models
@@ -73,7 +73,7 @@ obra image list
 obra image info <model-name>
 ```
 
-Notable models: `flux-2/pro-text-to-image`, `recraft/v3`, `ideogram/v3`, `grok-imagine`, `seedream-v4`, `dall-e-4o`.
+Notable models: `flux-2/pro-text-to-image`, `google/imagen4`, `grok-imagine/text-to-image`, `gpt-image/1.5-text-to-image`, `seedream/4.5-text-to-image`, `qwen/text-to-image`, `ideogram/character`, `z-image`.
 
 ---
 
@@ -84,10 +84,10 @@ Notable models: `flux-2/pro-text-to-image`, `recraft/v3`, `ideogram/v3`, `grok-i
 Provide an input image plus a prompt describing the edit:
 
 ```bash
-obra image generate "make it look like winter" --image input.jpg --model seedream-v4-edit --wait --json
+obra image generate "make it look like winter" --image input.jpg --model seedream/4.5-edit --wait --json
 ```
 
-Edit-capable models: `seedream-v4-edit`, `qwen/image-edit`, `grok-imagine/edit`, `dall-e-4o`.
+Edit-capable models: `seedream/4.5-edit`, `bytedance/seedream-v4-edit`, `qwen/image-edit`, `grok-imagine/image-to-image`, `gpt-image/1.5-image-to-image`, `google/nano-banana-edit`, `google/pro-image-to-image`, `ideogram/character-edit`.
 
 ### Upscaling
 
@@ -149,12 +149,12 @@ obra video info <model-name>
 ```
 
 Notable models by provider:
-- **Grok**: `grok-imagine/video`
-- **Kling**: `kling-2.6/master`, `kling-2.6/pro`
-- **Sora**: `sora-2-pro`
-- **Wan**: `wan/2-6-720p`, `wan/2-6-1080p`
-- **Hailuo**: `hailuo/t2v-director`
-- **Bytedance**: `seedance-1-lite`
+- **xAI**: `grok-imagine/text-to-video`, `grok-imagine/image-to-video`
+- **Kuaishou**: `kling-2.6/text-to-video`, `kling-2.6/image-to-video`, `kling/v2-1-master-text-to-video`
+- **OpenAI**: `sora-2-text-to-video`, `sora-2-pro-text-to-video`, `sora-2-image-to-video`, `sora-2-pro-image-to-video`
+- **Alibaba**: `wan/2-6-text-to-video`, `wan/2-6-image-to-video`
+- **MiniMax**: `hailuo/02-text-to-video-pro`, `hailuo/2-3-image-to-video-pro`
+- **Bytedance**: `bytedance/seedance-1.5-pro`, `bytedance/v1-pro-image-to-video`
 
 ---
 
